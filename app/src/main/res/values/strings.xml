@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">XChengScannerDemo</string>
+
+    <!--For continuous scan activity-->
+    <string name="text_scan_continue_times">Times count</string>
+    <string name="text_scan_continue_single_time">Single time</string>
+    <string name="text_scan_continue_average_time">Average time</string>
+    <string name="text_scan_continue_times_per_minute">Times per minute</string>
+    <string name="text_scan_continue_format">Format</string>
+    <string name="text_scan_continue_result">Decode result</string>
+
+    <!--For preview scan activity-->
+    <string name="text_scan_preview_open_flush_light">Flush Light</string>
+    <string name="text_scan_preview_results">Results:</string>
+
+    <string-array name="scanner_mode">
+        <item>Single Scan</item>
+        <item>Continuous Scan</item>
+        <item>Preview Scan</item>
+    </string-array>
+</resources>
