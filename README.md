@@ -16,7 +16,7 @@ This repository contains the source code for:
 
 > Note: To use the git command, you need to install Git on your computer. For Windows, you need to download and install [MSYS2](https://www.msys2.org/). For Ubuntu, use command "sudo apt install git" to install.
 
-You need to click "Clone or download" on the repository page, or to use the git command "git clone https://github.com/microsoft/terminal.git" to download.
+You need to click "Clone or download" on the repository page, or to use the git command "git clone https://github.com/xctech001/XChengScannerDemo.git" to download.
 
 ### Build the project
 
