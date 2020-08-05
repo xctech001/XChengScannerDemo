@@ -3,11 +3,16 @@ package com.xcheng.scanner.demo.scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import com.xcheng.scanner.demo.scanner.android.AudioBeepImpl;
 import com.xcheng.scanner.demo.scanner.android.CameraImpl;
+import com.xcheng.scanner.demo.utils.Log;
 import com.xcheng.scannere3.XCScanner;
 
 public class XChengScanner implements XCScanner.Result {
@@ -98,18 +103,60 @@ public class XChengScanner implements XCScanner.Result {
         }
     }
 
-    private final Builder mBuilder;
+    private static final int CMD_CAMERA_CREATE = 1;
+    private static final int CMD_CAMERA_RELEASE = 2;
+    private static final int CMD_CAMERA_FLUSH_LIGHT = 3;
+
+    private static final HandlerThread HTBeep = new HandlerThread("PlayBeep");
+    private static final HandlerThread HTCamera = new HandlerThread("RunCamera");
 
     private boolean isContinuous;
     private XCScanner mScanner;
 
+    private final Builder mBuilder;
+    private final Handler mHandleBeep;
+    private final Handler mHandleCamera;
+
+    @SuppressLint("HandlerLeak")
     public XChengScanner(Builder v) {
         this.mBuilder = v;
+        if (HTBeep.getState().equals(Thread.State.NEW))
+            HTBeep.start();
+        if (HTCamera.getState().equals(Thread.State.NEW))
+            HTCamera.start();
+
+        this.mHandleBeep = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mBuilder.mAudioBeepAction.play();
+            }
+        };
+
+        this.mHandleCamera = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case CMD_CAMERA_CREATE:
+                        mBuilder.mCameraAction.create();
+                        break;
+                    case CMD_CAMERA_RELEASE:
+                        mBuilder.mCameraAction.release();
+                        break;
+                    case CMD_CAMERA_FLUSH_LIGHT:
+                        mBuilder.mCameraAction.flushLight((Boolean) msg.obj);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
     }
 
     @Override
     public void scanBeep() {
-        this.mBuilder.mAudioBeepAction.play();
+        this.mHandleBeep.sendEmptyMessage(0);
     }
 
     @Override
@@ -125,19 +172,22 @@ public class XChengScanner implements XCScanner.Result {
     }
 
     public void init() {
-        this.mBuilder.mCameraAction.create();
+        this.mHandleCamera.sendEmptyMessage(CMD_CAMERA_CREATE);
         this.mScanner = XCScanner.newInstance();
         this.mScanner.onScanListener(this);
     }
 
     public void release() {
-        this.mBuilder.mCameraAction.release();
+        this.mHandleCamera.sendEmptyMessage(CMD_CAMERA_RELEASE);
         this.mBuilder.mAudioBeepAction.release();
         this.mScanner.deleteInstance();
     }
 
     public void flushLight(boolean v) {
-        this.mBuilder.mCameraAction.flushLight(v);
+        Message message = new Message();
+        message.what = CMD_CAMERA_FLUSH_LIGHT;
+        message.obj = v;
+        this.mHandleCamera.sendMessage(message);
     }
 
     public void decoding() {
