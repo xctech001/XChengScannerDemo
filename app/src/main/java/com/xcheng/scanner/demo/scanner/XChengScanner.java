@@ -6,13 +6,12 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+
 import com.xcheng.scanner.demo.scanner.android.AudioBeepImpl;
-import com.xcheng.scanner.demo.scanner.android.CameraImpl;
-import com.xcheng.scanner.demo.utils.Log;
+import com.xcheng.scanner.demo.scanner.android.Camera1Impl;
 import com.xcheng.scannere3.XCScanner;
 
 public class XChengScanner implements XCScanner.Result {
@@ -66,7 +65,7 @@ public class XChengScanner implements XCScanner.Result {
         private IAudioBeepAction mAudioBeepAction;
 
         public Builder(CameraParams params) {
-            this.mCameraAction = new CameraImpl(
+            this.mCameraAction = new Camera1Impl(
                     params.mContext,
                     params.mCameraID,
                     params.mWidth,
@@ -106,6 +105,8 @@ public class XChengScanner implements XCScanner.Result {
     private static final int CMD_CAMERA_CREATE = 1;
     private static final int CMD_CAMERA_RELEASE = 2;
     private static final int CMD_CAMERA_FLUSH_LIGHT = 3;
+
+    private static final int PARAMS_DEFAULT_TIMEOUTS = 15000;
 
     private static final HandlerThread HTBeep = new HandlerThread("PlayBeep");
     private static final HandlerThread HTCamera = new HandlerThread("RunCamera");
@@ -172,9 +173,14 @@ public class XChengScanner implements XCScanner.Result {
     }
 
     public void init() {
+        this.init(PARAMS_DEFAULT_TIMEOUTS);
+    }
+
+    public void init(int ms) {
         this.mHandleCamera.sendEmptyMessage(CMD_CAMERA_CREATE);
         this.mScanner = XCScanner.newInstance();
         this.mScanner.onScanListener(this);
+        this.mScanner.setRoundTimeout(ms);
     }
 
     public void release() {

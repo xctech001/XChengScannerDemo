@@ -90,6 +90,7 @@ public class PreviewScannerActivity extends Activity
                 .addListener(this)
                 .build();
         this.mScanner.init();
+        this.mScanner.decoding();
     }
 
     @Override
@@ -106,12 +107,6 @@ public class PreviewScannerActivity extends Activity
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        this.mScanner.release();
     }
 
     @Override
