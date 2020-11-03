@@ -11,7 +11,8 @@ import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.xcheng.scanner.demo.scanner.XChengScanner;
+import com.xcheng.scanner.sdk.ICameraAction;
+import com.xcheng.scanner.sdk.XChengScanner;
 import com.xcheng.scanner.demo.utils.Log;
 
 public class SingleScannerActivity extends Activity implements XChengScanner.IResultsListener {
@@ -64,6 +65,32 @@ public class SingleScannerActivity extends Activity implements XChengScanner.IRe
         super.onResume();
         // must build in here, the activity lifecycle always call it
         this.mXChengScanner = new XChengScanner.Builder(new XChengScanner.CameraParams(this))
+                .setCamera(new ICameraAction() {
+                    @Override
+                    public void create() {
+
+                    }
+
+                    @Override
+                    public void release() {
+
+                    }
+
+                    @Override
+                    public void flushLight(boolean b) {
+
+                    }
+
+                    @Override
+                    public void start() {
+
+                    }
+
+                    @Override
+                    public void stop() {
+
+                    }
+                })
                 .addListener(this)
                 .build();
         this.mXChengScanner.init();

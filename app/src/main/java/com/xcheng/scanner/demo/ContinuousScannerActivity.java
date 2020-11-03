@@ -10,7 +10,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
-import com.xcheng.scanner.demo.scanner.XChengScanner;
+import com.xcheng.scanner.sdk.XChengScanner;
 import com.xcheng.scanner.demo.utils.Log;
 
 public class ContinuousScannerActivity extends Activity implements XChengScanner.IResultsListener {

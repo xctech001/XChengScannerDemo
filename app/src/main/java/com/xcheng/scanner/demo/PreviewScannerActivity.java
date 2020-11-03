@@ -16,13 +16,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.xcheng.scanner.demo.scanner.XChengScanner;
+import com.xcheng.scanner.sdk.XChengScanner;
 import com.xcheng.scanner.demo.utils.Log;
 import com.xcheng.scanner.demo.widgets.PreviewInterfaceLine;
 
 public class PreviewScannerActivity extends Activity
         implements TextureView.SurfaceTextureListener,
         XChengScanner.IResultsListener {
+    private static final int TIMEOUTS_DEFAULT = 60000;
+
     private boolean isDown;
 
     private TextView mResults;
@@ -89,7 +91,7 @@ public class PreviewScannerActivity extends Activity
         this.mScanner = new XChengScanner.Builder(new XChengScanner.CameraParams(this, false, surfaceTexture))
                 .addListener(this)
                 .build();
-        this.mScanner.init();
+        this.mScanner.init(60000);
         this.mScanner.decoding();
     }
 
